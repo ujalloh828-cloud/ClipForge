@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#6659f7" />
+    <title>ClipForge — Montage vidéo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navigation principale">
+        <a class="brand" href="#editor" aria-label="ClipForge, accueil">
+          <span class="brand-mark" aria-hidden="true">▶</span>
+          <span>ClipForge</span>
+        </a>
+        <nav class="main-nav">
+          <button class="nav-item active" data-view="editor" type="button"><span aria-hidden="true">✦</span> Éditeur</button>
+          <button class="nav-item" data-view="ai" type="button"><span aria-hidden="true">✧</span> Studio IA</button>
+          <button class="nav-item" data-view="projects" type="button"><span aria-hidden="true">▣</span> Projets</button>
+          <button class="nav-item" data-view="subscription" type="button"><span aria-hidden="true">♕</span> Premium</button>
+          <button class="nav-item" data-view="admin" type="button"><span aria-hidden="true">⚙</span> Administration</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="credit-box">
+            <div><span class="eyebrow">Crédits IA</span><strong id="credits-count">20</strong><span class="credit-limit">/ 20 disponibles</span></div>
+            <button class="mini-upgrade" data-action="open-subscription" type="button">Premium</button>
+          </div>
+          <div class="profile"><span class="avatar">CF</span><span><strong>Créateur</strong><small id="plan-label">Plan gratuit</small></span></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-label="Ouvrir la navigation">☰</button>
+          <div class="project-title"><span class="status-dot" aria-hidden="true"></span><input id="project-name" value="Voyage — version finale" aria-label="Nom du projet" /><span class="save-state" id="save-state">Enregistré</span></div>
+          <div class="top-actions">
+            <button class="icon-button" id="undo" type="button" aria-label="Annuler">↶</button>
+            <button class="icon-button" id="redo" type="button" aria-label="Rétablir">↷</button>
+            <button class="export-button" id="export-video" type="button"><span aria-hidden="true">⇧</span> Exporter</button>
+          </div>
+        </header>
+
+        <section class="view active" id="editor-view" aria-labelledby="editor-heading">
+          <h1 class="sr-only" id="editor-heading">Éditeur vidéo</h1>
+          <div class="editor-layout">
+            <nav class="tool-rail" aria-label="Outils de montage">
+              <button class="rail-item active" data-tool="media" type="button" title="Médias"><span>▰</span><small>Médias</small></button>
+              <button class="rail-item" data-tool="audio" type="button" title="Audio"><span>♫</span><small>Audio</small></button>
+              <button class="rail-item" data-tool="text" type="button" title="Texte"><span>T</span><small>Texte</small></button>
+              <button class="rail-item" data-tool="transitions" type="button" title="Transitions"><span>↔</span><small>Trans.</small></button>
+              <button class="rail-item" data-tool="effects" type="button" title="Effets"><span>✦</span><small>Effets</small></button>
+              <button class="rail-item" data-tool="templates" type="button" title="Modèles"><span>▤</span><small>Modèles</small></button>
+            </nav>
+
+            <section class="editor-stage" aria-label="Aperçu et timeline">
+              <div class="preview-card">
+                <div class="preview-frame" id="preview-frame">
+                  <video id="preview-video" hidden controls playsinline></video>
+                  <div class="preview-art" id="preview-art">
+                    <span class="series-label">SÉRIE NOMADE</span>
+                    <h2 id="preview-title">Au rythme<br />de la mer</h2>
+                    <span class="caption-label">Sous-titres IA</span>
+                  </div>
+                </div>
+                <div class="player-controls">
+                  <button class="icon-button" id="previous-frame" type="button" aria-label="Image précédente">|◀</button>
+                  <button class="play-button" id="play-preview" type="button" aria-label="Lire l'aperçu">▶</button>
+                  <button class="icon-button" id="next-frame" type="button" aria-label="Image suivante">▶|</button>
+                  <span class="timecode" id="timecode">00:18:12 / 00:48:04</span>
+                  <button class="icon-button" id="fullscreen-preview" type="button" aria-label="Plein écran">⛶</button>
+                </div>
+              </div>
+
+              <section class="timeline-card" aria-label="Timeline multipiste">
+                <div class="timeline-toolbar">
+                  <button class="tool-button selected" data-edit-tool="select" type="button" aria-pressed="true">⌁ Sélection</button>
+                  <button class="tool-button" data-edit-tool="split" type="button" aria-pressed="false">✂ Découper</button>
+                  <button class="tool-button" data-edit-tool="crop" type="button" aria-pressed="false">⌗ Recadrer</button>
+                  <button class="tool-button" data-edit-tool="marker" type="button" aria-pressed="false">⌑ Marqueur</button>
+                  <span class="toolbar-spacer"></span>
+                  <label class="switch-label"><input id="snap-toggle" type="checkbox" checked /><span class="switch"></span> Magnétisme</label>
+                </div>
+                <div class="ruler" aria-hidden="true"><span>00:00</span><span>00:10</span><span>00:20</span><span>00:30</span><span>00:40</span><span>00:50</span></div>
+                <div id="timeline-tracks" class="timeline-tracks"></div>
+                <button class="add-track" id="add-track" type="button">+ Ajouter une piste</button>
+              </section>
+            </section>
+
+            <aside class="inspector" aria-label="Inspecteur">
+              <div class="inspector-title"><div class="clip-thumbnail" aria-hidden="true"></div><div><strong id="inspector-name">Côte sauvage.mov</strong><small id="inspector-type">Vidéo · 4K · 25 i/s</small></div></div>
+              <div class="inspector-tabs" role="tablist" aria-label="Réglages"><button class="inspector-tab active" type="button" data-inspector="video" aria-selected="true">Vidéo</button><button class="inspector-tab" type="button" data-inspector="audio" aria-selected="false">Audio</button><button class="inspector-tab" type="button" data-inspector="color" aria-selected="false">Couleur</button></div>
+              <div class="settings-pane" id="settings-pane"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="ai-view" aria-labelledby="ai-heading">
+          <div class="page-heading"><div><p class="eyebrow">SCRIPT → RESSOURCES</p><h1 id="ai-heading">Studio IA</h1><p>Générez des visuels, des plans vidéo et un habillage audio depuis votre scénario.</p></div><span class="ready-badge" id="generation-status">Prêt à générer</span></div>
+          <div class="ai-layout">
+            <section class="panel composer-panel">
+              <div class="panel-heading"><h2>Scène à produire</h2><span>01</span></div>
+              <label for="script-input">Description ou script</label>
+              <textarea id="script-input">À l'aube, une voyageuse marche au bord de l'océan. Caméra fluide, lumière dorée, ambiance cinématographique. Elle dit : « Aujourd'hui, je ralentis. »</textarea>
+              <fieldset class="asset-toggle-group"><legend>Ressources à générer</legend><label class="asset-toggle"><input type="checkbox" id="generate-image" checked /><span>▧</span> Images</label><label class="asset-toggle premium-option"><input type="checkbox" id="generate-video" /><span>▻</span> Vidéo <em>Premium</em></label><label class="asset-toggle"><input type="checkbox" id="generate-audio" checked /><span>♫</span> Audio</label></fieldset>
+              <div class="field-grid"><label>Direction artistique<select id="art-style"><option>Cinématographique</option><option>Documentaire</option><option>Illustration</option><option>Animation 3D</option></select></label><label>Format<select id="aspect-ratio"><option>16:9 · 2K</option><option>16:9 · 4K · Premium</option><option>9:16 · 4K · Premium</option><option>1:1 · 2K</option></select></label><label>Durée vidéo<select id="video-duration"><option>6 secondes</option><option>10 secondes</option><option>15 secondes</option></select></label><label>Voix<select id="voice-style"><option>FR · Claire, calme</option><option>FR · Homme, posé</option><option>Sans voix</option></select></label></div>
+              <label class="reference-row"><input type="checkbox" id="consistency" checked /> Conserver le personnage, la direction artistique et la voix du projet</label>
+              <button class="primary-button" id="generate-assets" type="button">✦ Générer le lot de scène</button>
+              <p class="help-text">Les rendus IA de cette démo sont simulés localement. Connectez un fournisseur IA et un système de crédits avant mise en production.</p>
+            </section>
+            <section class="panel result-panel">
+              <div class="panel-heading"><h2>Propositions à examiner</h2><span id="result-meta">Aucun rendu</span></div>
+              <div class="asset-results" id="asset-results" aria-live="polite"></div>
+              <div class="quality-checks"><h3>Contrôle qualité</h3><label><input type="checkbox" checked /> Cohérence du style</label><label><input type="checkbox" checked /> Respect du script</label><label><input type="checkbox" checked /> Format du projet</label></div>
+              <div class="result-actions"><span id="selected-asset-label">Sélectionnez une ressource</span><button class="secondary-button" id="insert-assets" type="button" disabled>Ajouter à la timeline</button></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="projects-view" aria-labelledby="projects-heading">
+          <div class="page-heading"><div><p class="eyebrow">ESPACE DE TRAVAIL</p><h1 id="projects-heading">Mes projets</h1><p>Vos projets sont stockés dans ce navigateur pour cette démonstration.</p></div><button class="primary-button compact" id="new-project" type="button">+ Nouveau projet</button></div>
+          <div class="project-grid" id="project-grid"></div>
+        </section>
+
+        <section class="view" id="subscription-view" aria-labelledby="subscription-heading">
+          <div class="page-heading centered"><div><p class="eyebrow">CLIPFORGE PREMIUM</p><h1 id="subscription-heading">Créer sans limite créative</h1><p>Choisissez la formule adaptée à votre fréquence de création.</p></div></div>
+          <div class="plan-grid" id="plan-grid"></div>
+          <p class="refund-notice">L’abonnement est remboursable dans les deux jours après l’abonnement si vous n’êtes pas satisfait du résultat.</p>
+        </section>
+
+        <section class="view" id="admin-view" aria-labelledby="admin-heading">
+          <div class="page-heading"><div><p class="eyebrow">TABLEAU DE BORD</p><h1 id="admin-heading">Administration</h1><p>Gérez les prix affichés et les limites des formules depuis un seul endroit.</p></div><button class="secondary-button" id="restore-prices" type="button">Rétablir les tarifs initiaux</button></div>
+          <section class="admin-card"><div class="admin-card-heading"><div><h2>Tarifs Premium</h2><p>Les modifications sont enregistrées dans ce navigateur et mises à jour instantanément dans l’écran d’abonnement.</p></div><span class="admin-badge">Brouillon local</span></div><form id="pricing-form" class="pricing-form"><label>Premium mensuel <span><input type="number" id="monthly-price" min="0" step="0.01" required /> $ / mois</span><small><input type="number" id="monthly-credits" min="0" step="1" required /> crédits IA / mois</small></label><label>Premium annuel <span><input type="number" id="annual-price" min="0" step="0.01" required /> $ / an</span><small>Prix mensuel affiché : <strong id="annual-monthly-display">4 $</strong></small></label><label>Premium Illimité <span><input type="number" id="unlimited-price" min="0" step="0.01" required /> $ / mois</span><small>Usage raisonnable appliqué</small></label><button class="primary-button" type="submit">Enregistrer les tarifs</button></form></section>
+        </section>
+      </main>
+    </div>
+
+    <input id="media-upload" type="file" accept="video/*,image/*,audio/*" hidden />
+
+    <dialog id="premium-dialog" class="modal"><form method="dialog" class="modal-card"><button class="modal-close" value="cancel" aria-label="Fermer">×</button><div class="modal-crown">♕</div><p class="eyebrow">PASSER À PREMIUM</p><h2>Débloquez la création IA</h2><p>Générez des vidéos depuis un script, exportez en 4K et supprimez le filigrane.</p><div class="modal-price" id="modal-price">5 $ <span>/ mois</span></div><fieldset class="payment-options"><legend>Choisir un moyen de paiement</legend><label class="payment-option"><input type="radio" name="payment-method" value="Carte bancaire" checked /><span>▣</span><strong>Carte bancaire</strong><small>Visa, Mastercard, American Express</small></label><label class="payment-option"><input type="radio" name="payment-method" value="PayPal" /><span>Ⓟ</span><strong>PayPal</strong><small>Paiement sécurisé via PayPal</small></label><label class="payment-option"><input type="radio" name="payment-method" value="Apple Pay / Google Pay" /><span>◉</span><strong>Apple Pay / Google Pay</strong><small>Disponible sur appareils compatibles</small></label><label class="payment-option"><input type="radio" name="payment-method" value="Mobile Money" /><span>▤</span><strong>Mobile Money</strong><small>Selon les opérateurs disponibles</small></label></fieldset><p class="payment-security">Aucune donnée de paiement n’est enregistrée dans cette démo.</p><button class="primary-button" id="modal-subscribe" value="default" type="button">Continuer avec Carte bancaire</button><button class="link-button" id="modal-see-plans" value="cancel" type="button">Voir toutes les formules</button><small>Remboursement possible dans les deux jours suivant l’abonnement si le résultat ne vous satisfait pas.</small></form></dialog>
+    <dialog id="export-dialog" class="modal"><form method="dialog" class="modal-card compact-modal"><button class="modal-close" value="cancel" aria-label="Fermer">×</button><p class="eyebrow">EXPORT</p><h2>Votre export est prêt à être configuré</h2><label>Format<select id="export-format"><option>MP4 · H.264</option><option>MOV · ProRes</option><option>WebM</option></select></label><label>Qualité<select id="export-quality"><option>1080p HD</option><option>4K Ultra HD · Premium</option></select></label><button class="primary-button" id="confirm-export" value="default" type="button">Préparer l’export</button><p class="help-text" id="export-message"></p></form></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
